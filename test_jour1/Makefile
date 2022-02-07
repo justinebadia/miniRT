@@ -16,7 +16,7 @@ AR= ar rc
 RM= rm -rf
 
 CC= gcc
-CFLAGS= -Wall -Werror -Wextra -c -g
+CFLAGS= -Wall -Wextra -c -g
 MFLAGS= -Lminilibx_opengl -lmlx -framework OpenGL -framework Appkit
 
 SDIR= sources

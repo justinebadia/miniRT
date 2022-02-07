@@ -21,11 +21,22 @@ typedef struct s_mlx
 	char	*adr;
 	int		width;
 	int		height;
+	int		init;
 
 	int		bpp;   // bits per pixel
 	int		endian;
 	int		w_len;
 } t_mlx;
+
+typedef	struct s_circle
+{
+	int x;
+	int	y;
+	int	z;
+	float radius;
+	int	init;
+}				t_circle;
+
 
 # define KEY_ESC 53 //ESCAPE
 # define KEY_Q 12 // Q
