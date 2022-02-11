@@ -69,3 +69,13 @@ t_vec3	new_vec_crossproduct(t_vec3 u, t_vec3 v)
 	resultante.z = (u.x * v.y) - (u.y * v.x);
 	return (resultante);
 }
+
+t_vec3 multiply_2_vec(t_vec3 u, t_vec3 v)
+{
+	t_vec3	resultante;
+
+	resultante.x = (u.x * v.x);
+	resultante.y = (u.y * v.y);
+	resultante.z = (u.z * v.z);
+	return (resultante);
+}

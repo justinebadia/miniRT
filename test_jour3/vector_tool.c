@@ -14,7 +14,7 @@
 
 // reçoit le pointeur du vecteur v et modifie ses composantes (x;y;z) 
 // afin de le normaliser ainsi simplifier les prochains calculs
-void	mod_vec_normalize(t_vec3 v)
+t_vec3	mod_vec_normalize(t_vec3 v)
 {
 	double		grandeur;
 
@@ -22,6 +22,8 @@ void	mod_vec_normalize(t_vec3 v)
 	v.x /= grandeur;
 	v.y /= grandeur;
 	v.z /= grandeur;
+
+	return (v);
 }
 
 // retourne la grandeur/longueur d'un vecteur

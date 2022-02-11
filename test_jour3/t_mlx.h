@@ -44,6 +44,7 @@ typedef struct s_sphere
 {
 	t_vec3	origin;
 	double rayon;
+	t_vec3	color;
 }				t_sphere;
 
 

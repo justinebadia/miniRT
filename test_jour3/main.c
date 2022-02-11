@@ -21,6 +21,80 @@
 #define M_PI 3.1415926535897932
 
 
+t_rgb    new_rgb(int r, int g, int b)
+{
+    t_rgb    rgb;
+
+    rgb.r = r;
+    rgb.g = g;
+    rgb.b = b;
+    return (rgb);
+}
+
+int    get_t(int trgb)
+{
+    return ((trgb >> 24) & 0xFF);
+}
+
+int    get_r(int trgb)
+{
+    return ((trgb >> 16) & 0xFF);
+}
+
+int    get_g(int trgb)
+{
+    return ((trgb >> 8) & 0xFF);
+}
+
+int    get_b(int trgb)
+{
+    return (trgb & 0xFF);
+}
+
+int    color_rgb_to_int(t_rgb rgb)
+{
+    int    color_int;
+
+    color_int = rgb.r << 16 | rgb.g << 8 | rgb.b;
+    return (color_int);
+}
+
+t_rgb    color_int_to_rgb(int color)
+{
+    t_rgb    rgb;
+
+    rgb.r = get_r(color);
+    rgb.g = get_g(color);
+    rgb.b = get_b(color);
+    return (rgb);
+}
+
+t_rgb    color_shift_rgb(t_rgb base, t_rgb shift, double force)
+{
+    t_rgb    new;
+
+    if (force < 0)
+        force = 0;
+    if (force > 1)
+        force = 1;
+    new.r = base.r + ((shift.r - base.r) * force);
+    new.g = base.g + ((shift.g - base.g) * force);
+    new.b = base.b + ((shift.b - base.b) * force);
+    return (new);
+}
+
+int    color_shift_int(int base, int shift, double force)
+{
+    t_rgb    rgb;
+    t_rgb    base_rgb;
+    t_rgb    shift_rgb;
+
+    base_rgb = color_int_to_rgb(base);
+    shift_rgb = color_int_to_rgb(shift);
+    rgb = color_shift_rgb(base_rgb, shift_rgb, force);
+    return (color_rgb_to_int(rgb));
+}
+
 t_vec3 P; // point P qui touche le cercle
 t_vec3 N; // N vecteur de la normale
 
@@ -175,9 +249,10 @@ int	intersect_sphere(t_ray r, t_sphere s, double *t)
 			return (0);
 	}
 	*t = t1;
-	P = new_vec_add(new_vec_multiply(r.direction, *t), r.origin);
-	N = new_vec_substract(P, s.origin);
-	get_vector_squared(N);
+	P = new_vec_add(new_vec_multiply(r.direction, *t), r.origin); // origine du rayon + le parametre t * la direction du rayon
+	N = new_vec_substract(P, s.origin); // vecteur unitaire qui va de l'origine de la sphère et qui va au point d'intersection
+	//get_vector_squared(N);
+	N = mod_vec_normalize(N);
 	return (1);
 }
 
@@ -192,23 +267,25 @@ int	ft_print_circle(t_main *main)
 	t_sphere sphere;
 	double t = 0;
 	t_vec3 light;
-	double intensity = 10000;
+	double intensity = 90000;
 	double intensity_pix;
 	
 
 	light.x = 0;
-	light.y = 300;
-	light.z = -40;
+	light.y = -500;
+	light.z = 40;
 
-	r.origin.x = 600 /2;
-	r.origin.y = 300;
+	r.origin.x = 0;
+	r.origin.y = 0;
 	r.origin.z = 300;
 
-	sphere.origin.x = 300;
-	sphere.origin.y = 300;
-	sphere.origin.z = -55;
-	sphere.rayon = 50;
+	sphere.origin.x = 0;
+	sphere.origin.y = 100;
+	sphere.origin.z = 100;
+	sphere.rayon = 100;
 
+	// int s_color = 0x6600CC;
+	// int l_color = 0xFFFF00;
 	mlx = get_mlx();
 		while (i < mlx->height)
 		{
@@ -220,16 +297,21 @@ int	ft_print_circle(t_main *main)
 				r.direction.z = -mlx->width / (2 * tan(fov / 2));
 				new_vector(r.direction.x, r.direction.y, r.direction.z);
 				mod_vec_normalize(r.direction);
-				intensity_pix = 0;
 				if (intersect_sphere(r, sphere, &t))
 				{
+					intensity_pix = 0;
 					// revoir la normalisation du vector
-					intensity_pix = intensity * get_dot_product(light, N) / get_vector_squared(new_vec_substract(light, P));
-					my_mlx_pixel_put(mlx, i, j, intensity_pix); // colore le rond en orange
-
+					//t_vec3 test;
+					// test = new_vec_substract(light, P);
+					// test = mod_vec_normalize(test);
+					intensity_pix = intensity * get_dot_product(new_vec_substract(light, P), N) / get_vector_squared(new_vec_substract(light, P));
+					if (intensity_pix > 0)
+						my_mlx_pixel_put(mlx, j, i, intensity_pix);
+					// 	printf("%f\n", intensity_pix);
+					//my_mlx_pixel_put(mlx, j, i, color_shift_int(s_color, l_color, intensity_pix/30)); // trouver une équation pour faire le mix entre l'intensité de la lumière et la couleur de la sphère
 				}
-				else
-					my_mlx_pixel_put(mlx, i, j, 0xff00ff); // colore le fonds en rose
+				// else
+				// 	my_mlx_pixel_put(mlx, j, i, 0); // colore le fonds en noir
 
 				j++;
 			}

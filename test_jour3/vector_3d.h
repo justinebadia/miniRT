@@ -23,15 +23,23 @@ typedef struct s_vector
 	double	z;
 }	t_vector;
 
+typedef struct s_rgb
+{
+	int	r;
+	int	g;
+	int	b;
+}	t_rgb;
+
 t_vec3	new_vector(double x, double y, double z);
 t_vec3	new_vec_add(t_vec3 u, t_vec3 v);
 t_vec3	new_vec_substract(t_vec3 u, t_vec3 v);
 t_vec3	new_vec_multiply(t_vec3 u, double scalar);
 t_vec3	new_vec_crossproduct(t_vec3 u, t_vec3 v);
-void		mod_vec_normalize(t_vec3 v);
+t_vec3		mod_vec_normalize(t_vec3 v);
 double		get_vector_length(t_vec3 v);
 double		get_dot_product(t_vec3 u, t_vec3 v);
 double	get_vector_squared(t_vec3 v);
+t_vec3 multiply_2_vec(t_vec3 u, t_vec3 v);
 
 
 #endif
